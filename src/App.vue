@@ -1,12 +1,54 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <h1>Strona główna</h1>
+    <b-button
+      class="loginButton"
+      v-if="isLogged"
+      @click="$store.commit('setLogged', false)"
+    >
+      Wyloguj
+    </b-button>
+
+    <Login
+      ref="loginModal"
+      @login="$refs.confirmLoginModal.setShow(true)"
+      v-if="!isLogged"
+    />
+    <confirmModal ref="confirmLoginModal" />
   </div>
 </template>
+
+<script>
+import Login from './pages/Login.vue'
+import confirmModal from './components/confirmModal.vue'
+
+export default {
+  components: {
+    Login,
+    confirmModal
+  },
+  computed: {
+    isLogged () {
+      return this.$store.state.logged
+    }
+  },
+  methods: {
+    setShow () {
+      this.$bvModal.hide('loginModal')
+      this.$bvModal.show('confirmModal')
+    }
+  },
+  watch: {
+    isLogged (val) {
+      if (val) {
+        setTimeout(() => {
+          alert('Zalogowano')
+        }, 100)
+      }
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
@@ -16,17 +58,7 @@
   text-align: center;
   color: #2c3e50;
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.loginButton {
+  margin-top: 10%;
 }
 </style>
